@@ -1,0 +1,74 @@
+
+auto clicker for alching - assignment_01 /.
+
+figure out /.
+    .how to click
+    .clicking in an interval
+        .how to control speed of clicking
+    .how to stop clicking
+        .give shortcut keys - 'ctrl + shift + s'
+        .upon press > stop program
+    .how to move mouse - keep clicking at same time
+        .in a confined set of pixels / box
+    .how to turn program into applet
+        .low cpu / memory usage
+
+august 5 /.
+    .make the B I G loop
+    .while true
+        .generate fast clicks interval
+        .while number of clicks < fast clicks interval
+            .loop through msFast array
+                .click at each interval
+
+clicking part done /.
+    .todo
+        .stopping with shortcut keys
+        .moving the mouse within a defined radius
+        .reference a config.properties file for parameter settings
+
+            msArrays.java - put these paramsters into a config.properties file
+
+                 private bounds fastClickBounds = new bounds(224, 276);
+                 private bounds slowClickBounds = new bounds(1004, 9004);
+                 private bounds mouseDownBounds = new bounds(8, 12);
+                 private bounds fastClickBoundsLimit = new bounds(
+                         fastClickBounds.getLowerBound() / 4,
+                         fastClickBounds.getupperBound() * 20
+                 );
+
+                 private bounds fastClicksInterval = new bounds(304, 2404);
+                 private bounds slowClicksInterval = new bounds(2, 24);
+
+                         msFast = new int[99];
+                         msSlow = new int[6];
+                         mouseHoldDown = new int[11];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
