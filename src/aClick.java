@@ -134,7 +134,7 @@ public class aClick{
                 i < msFast.length && fastClicks <= numFastClicksInterval;
                 i++){
 
-                fastClicks++;
+
 
                 click(mouseHoldDown[j]);
                 j++;
@@ -153,12 +153,20 @@ public class aClick{
                     utils.shuffleArray(mouseHoldDown);
                 }
 
-                Thread.sleep(msFast[i]);
+                // todo: double click - every 30 seconds~ish
+                if(fastClicks % 2 == 0 || fastClicks == 0){
+                    Thread.sleep(msFast[i] / 4);
+                }else{
+                    Thread.sleep(msFast[i] * 10);
+                }
+                //Thread.sleep(msFast[i]);
 
                 if(i == msFast.length - 1){
                     i = 0;
                     utils.shuffleArray(msFast);
                 }
+
+                fastClicks++;
             }
 
             long endTimeFastClicksInterval
