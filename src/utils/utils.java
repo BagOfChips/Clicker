@@ -1,3 +1,5 @@
+package utils;
+
 import java.awt.*;
 import java.util.Random;
 
@@ -57,8 +59,38 @@ public class utils{
     public int getScreenWidth(){
         return screenWidth;
     }
-
     public int getScreenHeight(){
         return screenHeight;
     }
+
+    // randomly select item in array
+    private Random random = new Random();
+
+    public int randomPick1numberFromArray(int[] array){
+        return array[randomPickNumberInRange(0, array.length - 1)];
+    }
+
+    public int randomPickNumberInRange(int lowerBound, int upperBound){
+        if(lowerBound > upperBound){
+            System.out.println("randomPickNumberInRange()");
+            System.out.println("  lowerBound > upperBound");
+            System.exit(0);
+        }
+        return random.nextInt((upperBound - lowerBound) + 1) + lowerBound;
+    }
+
+    public int[] randomPick2numbersFromArray(int[] array){
+        int max = array.length - 1;
+        int min = 0;
+        return new int[]{array[randomPickNumberInRange(min, max)], array[randomPickNumberInRange(min, max)]};
+    }
+
+    public int[] randomPickItemsFromArray(int[] array, int itemsToSelect){
+        int[] newArray = new int[itemsToSelect];
+        for(int i = 0; i < newArray.length; i++){
+            newArray[i] = randomPick1numberFromArray(array);
+        }
+        return newArray;
+    }
+
 }

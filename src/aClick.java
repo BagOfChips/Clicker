@@ -121,6 +121,8 @@ public class aClick{
         return interval;
     }
 
+    // todo: rename to alch()
+    // todo: create separate method for nmz support
     public void runDebug() throws InterruptedException{
         int l = 0;
         while(l < 12){
@@ -157,7 +159,7 @@ public class aClick{
                 if(fastClicks % 2 == 0 || fastClicks == 0){
                     Thread.sleep(msFast[i] / 4);
                 }else{
-                    Thread.sleep(msFast[i] * 10);
+                    Thread.sleep(msFast[i] * 8);
                 }
                 //Thread.sleep(msFast[i]);
 

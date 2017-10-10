@@ -18,9 +18,9 @@ public class mousePointer{
     private Point position;
     private Robot robot = new Robot();
 
-    private Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
-    private int screenWidth = (int) screensize.getWidth();
-    private int screenHeight = (int) screensize.getHeight();
+    private utils utils = new utils();
+    private int screenWidth = utils.getScreenWidth();
+    private int screenHeight = utils.getScreenHeight();
 
     private int radius;
     private coordinates[] coordinates;
