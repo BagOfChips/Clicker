@@ -1,7 +1,9 @@
 import imageUtils.*;
 import imageUtils.snapshot;
 import mouseUtils.moveMouse;
+import nmz.nmzController;
 import nmz.nmzUtils;
+import nmz.runResult;
 
 import java.awt.AWTException;
 import java.awt.image.BufferedImage;
@@ -60,10 +62,15 @@ public class assignment_01main{
         //nmzUtils.prayerFlick();
 
         // testing templateMatch()
-        nmzUtils nmzUtils = new nmzUtils();
-        nmzUtils.loadNMZConfig();
-        nmzUtils.drinkAbsorption();
+        //nmzUtils nmzUtils = new nmzUtils();
+        //nmzUtils.loadNMZConfig();
+        //nmzUtils.drinkAbsorption();
+        //nmzUtils.prayerFlick();
 
+        // testing nmzController
+        nmzController nmzController = new nmzController();
+        runResult run = nmzController.run();
+        System.out.println(run);
     }
 }
 

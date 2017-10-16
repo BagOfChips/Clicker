@@ -36,16 +36,23 @@ public class nmzUtils{
      *  7. logging out
      */
 
-    private timer prayerFlickTimer;
-    private timer drinkAbsorptionTimer;
-    private timer drinkSuperRangingTimer;
-    private bounds endTimeBounds;
+    // timers
+    public timer prayerFlickTimer;
+    public timer drinkAbsorptionTimer;
+    public timer drinkSuperRangingTimer;
+    public bounds endTimeBounds;
+    public bounds drinkAbsorptionIntervalBounds;
+    public bounds controllerDelayBounds;
+
+    // targettedImages
     private Mat prayerIconMat;
-    //private targettedImage superRangingPotion;
-    //private targettedImage absorptionPotion;
-    //private snapshot snapshot;
     private imageSURF imageSURF = new imageSURF();
     private corners corners;
+    private Mat nmzInventoryMat;
+    private corners inventoryCorners;
+    private Mat[] absorpDoses;
+
+    // mouse controller
     private moveMouse moveMouse = new moveMouse();
     private int xRandomOffset;
     private int yRandomOffset;
@@ -57,10 +64,8 @@ public class nmzUtils{
     private mouseClick mouseClick = new mouseClick();
     private int doubleClickOffset;
     private int[] clickingPoint;
-    private Mat[] absorpDoses;
     private bounds clicksForPotionDrinking;
-    private Mat nmzInventoryMat;
-    private corners inventoryCorners;
+
 
     public nmzUtils() throws AWTException{}
 
@@ -74,7 +79,6 @@ public class nmzUtils{
      */
     public void loadNMZConfig(){
         System.out.println("loadNMZConfig()");
-        // todo: initialize timers here
         Properties prop = new Properties();
         InputStream input = null;
 
@@ -84,12 +88,13 @@ public class nmzUtils{
 
             String combat = prop.getProperty("nmz.combat"); // only ranged is supported atm, var not used
             int prayerFlickInterval = Integer.parseInt(prop.getProperty("nmz.prayerFlickInterval"));
-            int drinkAbsorptionInterval = Integer.parseInt(prop.getProperty("nmz.drinkAbsorptionInterval"));
-            int drinkSuperRangeInterval = Integer.parseInt(prop.getProperty("nmz.drinkSuperRangeInterval"));
+            //int drinkAbsorptionInterval = Integer.parseInt(prop.getProperty("nmz.drinkAbsorptionInterval"));
+            //int drinkSuperRangeInterval = Integer.parseInt(prop.getProperty("nmz.drinkSuperRangeInterval"));
 
-            prayerFlickTimer = new timer(prayerFlickInterval);
-            drinkAbsorptionTimer = new timer(drinkAbsorptionInterval);
-            drinkSuperRangingTimer = new timer(drinkSuperRangeInterval);
+            prayerFlickTimer = new timer(prayerFlickInterval); // prayerFlick intervals will always be the same
+            // generate bounds for absorption drinking intervals, not static intervals
+            //drinkAbsorptionTimer = new timer(drinkAbsorptionInterval);
+            //drinkSuperRangingTimer = new timer(drinkSuperRangeInterval);
 
             // load endTimes into a global bound variable
             int endTimeLowerBound = Integer.parseInt(prop.getProperty("nmz.endTimeLowerBound"));
@@ -151,6 +156,21 @@ public class nmzUtils{
             nmzInventoryMat = imageSURF.bufferedImageToMat(nmzInventory.getTargettedImage());
             findInventory();
 
+            // bounds for drinking absorption pot intervals
+            int drinkAbsorptionIntervalLowerBound = Integer.parseInt(prop.getProperty("nmz.drinkAbsorptionIntervalLowerBound"));
+            int drinkAbsorptionIntervalUpperBound = Integer.parseInt(prop.getProperty("nmz.drinkAbsorptionIntervalUpperBound"));
+            drinkAbsorptionIntervalBounds = new bounds(drinkAbsorptionIntervalLowerBound, drinkAbsorptionIntervalUpperBound);
+            drinkAbsorptionTimer = new timer(utils.randomPickNumberInRange(
+                    drinkAbsorptionIntervalBounds.getLowerBound(),
+                    drinkAbsorptionIntervalBounds.getUpperBound()
+            ));
+
+            // delay before next iteration for controller()
+            int controllerDelayLowerBound = Integer.parseInt(prop.getProperty("nmz.controllerDelayLowerBound"));
+            int controllerDelayUpperBound = Integer.parseInt(prop.getProperty("nmz.controllerDelayUpperBound"));
+            controllerDelayBounds = new bounds(controllerDelayLowerBound, controllerDelayUpperBound);
+
+
         }catch(IOException | AWTException e){
             e.printStackTrace();
         }finally{
@@ -164,11 +184,11 @@ public class nmzUtils{
         }
     }
 
-    public void prayerFlick() throws AWTException, InterruptedException{
+    public boolean prayerFlick() throws AWTException, InterruptedException{
 
         // load prayer icon into bufferedImage, then convert into Mat object
         imageSURF.loadSnapshotIntoMat();
-        boolean targettedImageFound = imageSURF.SURF(prayerIconMat, 1, 2, 1, 0.7f, 7);
+        boolean targettedImageFound = imageSURF.SURF(prayerIconMat, 1, 2, 1, 0.7f, 15);
         if(targettedImageFound){
             // retrieve coordinates
             corners = imageSURF.getFoundImageCorners();
@@ -182,9 +202,11 @@ public class nmzUtils{
 
             // doubleClick should have a "slight offset" on each click
             mouseClick.doubleClickWithOffset(mouseHoldDownValues, doubleClickDelay, doubleClickOffset);
+            return true;
         }else{
             System.out.println("prayerFlick()");
             System.out.println("  targettedImage not found");
+            return false;
         }
     }
 
@@ -200,7 +222,7 @@ public class nmzUtils{
      *
      * For larger targettedImages, OpenCV algorithms work fine
      */
-    public void findInventory() throws AWTException{
+    private void findInventory() throws AWTException{
         System.out.println("findInventory()");
         /**
          * 1. get coordinates of inventory
@@ -209,7 +231,7 @@ public class nmzUtils{
          */
 
         imageSURF.loadSnapshotIntoMat();
-        boolean targettedImageFound = imageSURF.SURF(nmzInventoryMat, 1, 2, 1, 0.7f, 7);
+        boolean targettedImageFound = imageSURF.SURF(nmzInventoryMat, 1, 2, 1, 0.7f, 120);
         if(targettedImageFound){
             inventoryCorners = imageSURF.getFoundImageCorners();
             inventoryCorners.printAllCorners();
@@ -221,31 +243,42 @@ public class nmzUtils{
         System.exit(0);
     }
 
-    public void drinkAbsorption() throws AWTException{
+    public boolean drinkAbsorption() throws AWTException{
         System.out.println("drinkAbsorption()");
 
+        // only perform search on inventory
         imageSURF.loadSnapshotIntoMat(inventoryCorners);
         for(Mat absorpDose: absorpDoses){
-            //boolean targettedImageFound = imageSURF.SURF(absorpDose, 3, 1, 1, 0.85f, 7);
-            boolean targettedImageFound = imageSURF.templateMatch(absorpDose);
-
-            /*if(targettedImageFound){
+            // use templateMatch() instead of SURF for smaller images
+            boolean targettedImageFound = imageSURF.templateMatch(absorpDose, 0.988);
+            if(targettedImageFound){
                 corners = imageSURF.getFoundImageCorners();
                 clickingPoint = corners.calculateCenter();
-                moveMouse.randomizedMoveMouse(clickingPoint[0], clickingPoint[1], xRandomOffset, yRandomOffset);
+
+                // get topLeft corner for inventory first
+                int[] topLeftInventory = inventoryCorners.getTopLeftCorner();
+                moveMouse.randomizedMoveMouse(
+                        clickingPoint[0] + topLeftInventory[0],
+                        clickingPoint[1] + topLeftInventory[1],
+                        xRandomOffset,
+                        yRandomOffset
+                );
 
                 int numberOfClicks = utils.randomPickNumberInRange(
-                        clicksForPotionDrinking.getLowerBound(), clicksForPotionDrinking.getUpperBound());
+                        clicksForPotionDrinking.getLowerBound(),
+                        clicksForPotionDrinking.getUpperBound()
+                );
                 System.out.println("  numberOfClicks: " + numberOfClicks);
                 int[] mouseHoldDownValues = utils.randomPickItemsFromArray(mouseHoldDown, numberOfClicks);
                 // we can use doubleClickSpeed[] values - no need to create a new array for spam clicks
                 int[] clickDelayValues = utils.randomPickItemsFromArray(doubleClickSpeed, numberOfClicks);
                 mouseClick.multiClickWithOffset(mouseHoldDownValues, clickDelayValues, doubleClickOffset);
-                return;
-            }*/
+                return true;
+            }
         }
         // not found
         System.out.println("  no absorption pots found");
+        return false;
     }
 
     public void drinkSuperRanging(){

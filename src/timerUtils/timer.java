@@ -1,5 +1,8 @@
 package timerUtils;
 
+/**
+ * use ONLY ms for units
+ */
 public class timer{
 
     private long startTime;
@@ -19,8 +22,8 @@ public class timer{
         runningTime = 0;
     }
 
-    public void incrementRunningTime(int seconds){
-        runningTime += seconds;
+    public void incrementRunningTime(int ms){
+        runningTime += ms;
     }
 
     public int getRunningTime(){
@@ -31,12 +34,16 @@ public class timer{
         return reloadTime;
     }
 
-    public void setReloadTime(int seconds){
-        reloadTime = seconds;
+    public void setReloadTime(int ms){
+        reloadTime = ms;
     }
 
     private int convertToSeconds(long ms){
         return (int) ms / 1000;
+    }
+
+    public int getElapsedMilliseconds(){
+        return (int) (System.currentTimeMillis() - startTime);
     }
 
     private int getElapsedSeconds(){

@@ -210,16 +210,12 @@ public class imageSURF{
     /**
      * Alternative to SURF()
      * Should work for smaller targettedImage
-     *
-     * todo: one of the methods should be checked if targettedImage not found
-     *  return false immediately
-     *
-     * reference: https://stackoverflow.com/questions/23451721/how-to-detect-a-subset-image-in-a-picture-where-the-position-of-the-picture-may
+     * Reference: https://stackoverflow.com/questions/23451721/how-to-detect-a-subset-image-in-a-picture-where-the-position-of-the-picture-may
      *
      * @param targettedImageMat
      * @return
      */
-    public boolean templateMatch(Mat targettedImageMat){
+    public boolean templateMatch(Mat targettedImageMat, double accuracy){
         System.out.println("templateMatch()");
 
         // turn both snapshotMat and targettedImageMat into IplImage objects
@@ -246,17 +242,30 @@ public class imageSURF{
         System.out.println("  " + java.util.Arrays.toString(min_val));
         System.out.println("  " + java.util.Arrays.toString(max_val));
 
-        // draw rectangle for matched region
-        int[] point = new int[2];
-        point[0] = maxLoc[0] + targettedIpl.width();
-        point[1] = maxLoc[1] + targettedIpl.height();
-        cvRectangle(snapshotIpl, maxLoc, point, CvScalar.WHITE, 2, 8, 0);
+        if(max_val[0] > accuracy){
+            // draw rectangle for matched region
+            int[] point = new int[2];
+            point[0] = maxLoc[0] + targettedIpl.width();
+            point[1] = maxLoc[1] + targettedIpl.height();
 
-        cvShowImage("found targettedImage", snapshotIpl);
-        cvWaitKey(0);
-        cvReleaseImage(snapshotIpl);
-        cvReleaseImage(targettedIpl);
-        cvReleaseImage(result);
+            // store found image as a corners object
+            foundImageCorners = new corners(
+                    maxLoc,
+                    new int[]{maxLoc[0] + targettedIpl.width(), maxLoc[1]},
+                    point,
+                    new int[]{maxLoc[0], maxLoc[1] + targettedIpl.height()}
+            );
+
+            /** // uncomment to see found image
+             cvRectangle(snapshotIpl, maxLoc, point, CvScalar.WHITE, 2, 8, 0);
+             cvShowImage("found targettedImage", snapshotIpl);
+             cvWaitKey(0);
+             cvReleaseImage(snapshotIpl);
+             cvReleaseImage(targettedIpl);
+             cvReleaseImage(result);
+            */
+            return true;
+        }
 
         // not found
         System.out.println("  not found");
