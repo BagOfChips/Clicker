@@ -1,4 +1,4 @@
-![## search + click](https://imgur.com/VnXq5gz)
+![## search + click](https://i.imgur.com/VnXq5gz.png)
 A customizable auto-clicker that finds and clicks wherever you want
 
 Handy for automating simple (and complex) day to day desktop tasks
