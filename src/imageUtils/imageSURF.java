@@ -10,9 +10,11 @@ import org.opencv.core.*;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
+import org.opencv.core.Scalar;
 import org.opencv.features2d.*;
 import org.opencv.features2d.DMatch;
 import org.opencv.features2d.KeyPoint;
+import org.opencv.highgui.Highgui;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
