@@ -57,10 +57,11 @@ public class nmzController{
         }
 
         /**
-         * out of main loop now, 1 of 3 three scenarios
+         * out of main loop now, 1 of 4 three scenarios
          *  1. 4 - 6 hours has passed
          *  2. ran out of absorption pots
          *  3. can no longer find prayer icon
+         *  4. dont know
          */
         return finishedResult(prayerFlickChecks, absorptionChecks);
 

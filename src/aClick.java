@@ -9,7 +9,7 @@ import java.util.Random;
 
 /**
  * aClick: main autoclicker class
- */
+ *
 public class aClick{
 
     private msArrays msArrays = new msArrays();
@@ -221,3 +221,4 @@ public class aClick{
         }
     }
 }
+*/

@@ -12,7 +12,7 @@ import java.util.Random;
 
 /**
  * mousePointer: cursor utilities
- */
+ *
 public class mousePointer{
 
     private Point position;
@@ -150,3 +150,4 @@ public class mousePointer{
         return coordinates;
     }
 }
+*/
