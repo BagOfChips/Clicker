@@ -13,7 +13,7 @@ Handy for automating simple (and complex) day to day desktop tasks
 * For larger images with defined features, OpenCV has implemented the FAST [feature detection](https://docs.opencv.org/trunk/d7/d66/tutorial_feature_detection.html) algorithm
     * Given my desktop, here is the result of finding [pictures/nmz/nmz_inventory.png](https://i.imgur.com/J5nBQ9k.png)
     ![FAST demo](https://i.imgur.com/C53yluA.png)  <br />
-* For smaller images, OpenCV has implemented various [template matching](https://docs.opencv.org/trunk/d7/d66/tutorial_feature_detection.html) solutions
+* For smaller images, OpenCV has implemented various [template matching](https://docs.opencv.org/trunk/de/da9/tutorial_template_matching.html) solutions
     * Given the *returned image* above, we can search within this new image for [pictures/nmz/absorp4.png](https://i.imgur.com/xIfisVt.png)
     ![templateMatching demo](https://i.imgur.com/L03FC6t.png)  <br />
 * Experiment with custom timers and multiple images to create a repeating sequence of clicks
