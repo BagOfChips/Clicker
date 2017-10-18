@@ -3,17 +3,26 @@ package nmz;
 import timerUtils.timer;
 import utils.utils;
 import java.awt.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import loggerUtils.loggerUtils;
 
 public class nmzController{
+
+    private static Logger logger = Logger.getLogger(nmzController.class.getName());
+    static{
+        logger = loggerUtils.setLoggerConfig(logger);
+    }
 
     private timer controllerTimer = new timer();
     private nmzUtils nmzUtils = new nmzUtils();
     private utils utils = new utils();
 
-    public nmzController() throws AWTException{}
+    public nmzController() throws AWTException{
+    }
 
     public runResult run() throws InterruptedException, AWTException{
-        System.out.println("run()");
+
         nmzUtils.loadNMZConfig();
 
         setEndTime();
@@ -24,7 +33,7 @@ public class nmzController{
 
         // hard code limits
         nmzChecks prayerFlickChecks = new nmzChecks(2);
-        nmzChecks absorptionChecks = new nmzChecks(50);
+        nmzChecks absorptionChecks = new nmzChecks(10);
         while(controllerTimer.getRunningTime() < controllerTimer.getReloadTime()
                 && prayerFlickChecks.getCurrentChecks() < prayerFlickChecks.getChecksLimit()
                 && absorptionChecks.getCurrentChecks() < absorptionChecks.getChecksLimit()){
@@ -87,11 +96,9 @@ public class nmzController{
     }
 
     private void logTimes(){
-        System.out.println("logTimes()");
-        System.out.println("  prayerFlick running time: " + nmzUtils.prayerFlickTimer.getRunningTime());
-        System.out.println("  absorption running time: " + nmzUtils.drinkAbsorptionTimer.getRunningTime());
-        System.out.println("  total (controller) running time: " + controllerTimer.getRunningTime());
-
+        logger.log(Level.FINE, "  Last prayer flick: {0}", nmzUtils.prayerFlickTimer.getRunningTime());
+        logger.log(Level.FINE, "  Last absorption sip: {0}", nmzUtils.drinkAbsorptionTimer.getRunningTime());
+        logger.log(Level.FINE, "  Total run time: {0}", controllerTimer.getRunningTime());
     }
 
     private void delayBeforeNextIteration() throws InterruptedException{

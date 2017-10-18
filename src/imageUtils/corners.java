@@ -1,7 +1,10 @@
 package imageUtils;
 
-import java.awt.*;
+import loggerUtils.loggerUtils;
+
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Define corners for found image
@@ -9,23 +12,29 @@ import java.util.Arrays;
  */
 public class corners{
 
+    private static Logger logger = Logger.getLogger(corners.class.getName());
+    static{
+        logger = loggerUtils.setLoggerConfig(logger);
+    }
+
     private int[] topLeftCorner;        // 00
-    private int[] topRigthCorner;       // 10
+    private int[] topRightCorner;       // 10
     private int[] bottomRightCorner;    // 20
     private int[] bottomLeftCorner;     // 30
 
     public void printAllCorners(){
-        System.out.println("printAllCorners()");
-        System.out.println("  topLeft: " + Arrays.toString(topLeftCorner));
-        System.out.println("  topRight: " + Arrays.toString(topRigthCorner));
-        System.out.println("  bottomRight: " + Arrays.toString(bottomRightCorner));
-        System.out.println("  bottomLeft: " + Arrays.toString(bottomLeftCorner));
+        logger.log(Level.FINER, "  Top left corner: {0}", Arrays.toString(topLeftCorner));
+        logger.log(Level.FINER, "  Top right corner: {0}", Arrays.toString(topRightCorner));
+        logger.log(Level.FINER, "  Bottom right left corner: {0}", Arrays.toString(bottomRightCorner));
+        logger.log(Level.FINER, "  Bottom left corner: {0}", Arrays.toString(bottomLeftCorner));
     }
 
-    public corners(int[] topLeftCorner, int[] topRigthCorner,
+    public corners(int[] topLeftCorner, int[] topRightCorner,
                    int[] bottomRightCorner, int[] bottomLeftCorner){
+        logger = loggerUtils.setLoggerConfig(logger);
+
         this.topLeftCorner = topLeftCorner;
-        this.topRigthCorner = topRigthCorner;
+        this.topRightCorner = topRightCorner;
         this.bottomRightCorner = bottomRightCorner;
         this.bottomLeftCorner = bottomLeftCorner;
     }
@@ -33,8 +42,8 @@ public class corners{
     // todo: create a DIFFERENT method that calculates the "center" of the polygon
     // assume for now this will always be a rectangle
     public int[] calculateCenter(){
-        int xMiddle = (topRigthCorner[0] + bottomLeftCorner[0]) / 2;
-        int yMiddle = (topRigthCorner[1] + bottomLeftCorner[1]) / 2;
+        int xMiddle = (topRightCorner[0] + bottomLeftCorner[0]) / 2;
+        int yMiddle = (topRightCorner[1] + bottomLeftCorner[1]) / 2;
         return new int[]{xMiddle, yMiddle};
     }
 
@@ -43,8 +52,8 @@ public class corners{
         return topLeftCorner;
     }
 
-    public int[] getTopRigthCorner(){
-        return topRigthCorner;
+    public int[] getTopRightCorner(){
+        return topRightCorner;
     }
 
     public int[] getBottomRightCorner(){
@@ -59,8 +68,8 @@ public class corners{
         topLeftCorner = corner;
     }
 
-    public void setTopRigthCorner(int[] corner){
-        topRigthCorner = corner;
+    public void setTopRightCorner(int[] corner){
+        topRightCorner = corner;
     }
 
     public void setBottomRightCorner(int[] corner){

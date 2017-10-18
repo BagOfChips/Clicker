@@ -1,8 +1,13 @@
 package mouseUtils;
 
+import loggerUtils.loggerUtils;
+import nmz.nmzController;
+
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Objective:
@@ -14,6 +19,11 @@ import java.util.List;
  */
 public class moveMouse{
 
+    private static Logger logger = Logger.getLogger(nmzController.class.getName());
+    static{
+        logger = loggerUtils.setLoggerConfig(logger);
+    }
+
     private Random random = new Random();
     private Robot robot = new Robot();
 
@@ -22,7 +32,8 @@ public class moveMouse{
      *
      * @throws AWTException
      */
-    public moveMouse() throws AWTException{}
+    public moveMouse() throws AWTException{
+    }
 
     public int getMouseX(){
         return MouseInfo.getPointerInfo().getLocation().x;
@@ -54,7 +65,7 @@ public class moveMouse{
      * @param yRandomOffset
      */
     private void randomizedMoveMouse(Point mouseCurrentPosition, Point mouseDestination, int xRandomOffset, int yRandomOffset){
-        System.out.println("randomizedMoveMouse()");
+
         if(Math.abs(mouseDestination.x - mouseCurrentPosition.x) <= xRandomOffset
                 && Math.abs(mouseDestination.y - mouseCurrentPosition.y) <= yRandomOffset){
             return;
@@ -66,7 +77,6 @@ public class moveMouse{
         cooardList[3] = new Point(mouseDestination.x + random(-xRandomOffset, xRandomOffset),
                                   mouseDestination.y + random(-yRandomOffset, yRandomOffset));
 
-        // todo: rename this
         int xCurve = Math.abs(mouseDestination.x - mouseCurrentPosition.x) / 10;
         int yCurve = Math.abs(mouseDestination.y - mouseCurrentPosition.y) / 10;
 
@@ -91,7 +101,7 @@ public class moveMouse{
         List<Double> pixelXList = new ArrayList<>();
         List<Double> pixelYList = new ArrayList<>();
         // lower k = more generated mouse movements
-        double k = .005; // 200 points generated
+        double k = .005; // 200 points generated - todo: this should be an input parameter
         for(double t = k; t <= 1 + k; t += k){
             //use Berstein polynomials
             pixelXMouse = (cooardList[0].x + t * (-cooardList[0].x * 3 + t * (3 * cooardList[0].x -
@@ -109,10 +119,10 @@ public class moveMouse{
         }
 
         int listSize = pixelXList.size();
-        System.out.println("  listSize: " + listSize);
+        logger.log(Level.FINEST, "Size of mouse coordinates list: {0}", listSize);
         for(int i = 0; i < listSize; i++){
             robot.mouseMove(pixelXList.get(i).intValue(), pixelYList.get(i).intValue());
-            robot.delay((int) Math.log((i / 12) + 1));
+            robot.delay((int) Math.log((i / 12) + 1)); // todo: this should be an input parameter
         }
     }
 }

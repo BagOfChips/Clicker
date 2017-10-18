@@ -1,5 +1,6 @@
 package imageUtils;
 
+import loggerUtils.loggerUtils;
 import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_core.IplImage;
 import org.bytedeco.javacv.Java2DFrameConverter;
@@ -22,6 +23,8 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 import java.util.*;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.bytedeco.javacpp.opencv_core.*;
 import static org.bytedeco.javacpp.opencv_highgui.cvShowImage;
@@ -33,14 +36,22 @@ import static org.bytedeco.javacpp.opencv_imgproc.cvRectangle;
 
 /**
  * Reference: http://dummyscodes.blogspot.ca/2015/12/using-siftsurf-for-object-recognition.html
+ * todo: refactor class name, SURF no longer main feature detector
  */
 public class imageSURF{
+
+    private static Logger logger = Logger.getLogger(imageSURF.class.getName());
+    static{
+        logger = loggerUtils.setLoggerConfig(logger);
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+    }
 
     private snapshot snapshotUtils = new snapshot();
     private Mat snapshotMat = null;
     private corners foundImageCorners = null;
 
-    public imageSURF() throws AWTException{}
+    public imageSURF() throws AWTException{
+    }
 
     public corners getFoundImageCorners(){
         return foundImageCorners;
@@ -92,29 +103,26 @@ public class imageSURF{
      * Initialize snapshotMat + targettedImagesMat
      */
     public void loadSnapshotIntoMat(){
-        System.out.println("loadIntoMats()");
         snapshotUtils.takeSnapshot();
-        //snapshotUtils.loadBufferedImages(); // targetted images in ./pictures - todo: shouldnt need anymore
-
         BufferedImage snapshot = snapshotUtils.getSnapshot();
         snapshotMat = bufferedImageToMat(snapshot);
     }
 
     public void loadSnapshotIntoMat(corners corners){
-        System.out.println("loadIntoMats()");
         snapshotUtils.takeSnapshot(corners);
         BufferedImage snapshot = snapshotUtils.getSnapshot();
         snapshotMat = bufferedImageToMat(snapshot);
-
     }
 
     /**
      * Use OpenCV implementation of SURF to search for targettedImage
      * Set the coordinates of the found polygon
+     *
+     * todo: refactor this - SURF is no longer used unless FeatureDetectorAlgo == 3
      * @return true if found targettedImage
      */
     public boolean SURF(Mat targettedImage, int FeatureDetectorAlgo, int DescriptorExtractorAlgo, int DescriptorMatcherAlgo, float nndrRatio, int goodMatchesCriteria){
-        System.out.println("SURF()");
+
         MatOfKeyPoint objectKeyPoints = new MatOfKeyPoint();
         FeatureDetector featureDetector = FeatureDetector.create(FeatureDetectorAlgo);
 
@@ -150,8 +158,8 @@ public class imageSURF{
         }
 
         if(goodMatchesList.size() >= goodMatchesCriteria){
-            System.out.println("  targettedImage found");
-            System.out.println("  goodMatchesList.size(): " + goodMatchesList.size());
+            logger.log(Level.FINER, "targettedImage found");
+            logger.log(Level.FINER, "Number of good matches: {0}", goodMatchesList.size());
 
             List<KeyPoint> objKeypointlist = objectKeyPoints.toList();
             List<KeyPoint> scnKeypointlist = sceneKeyPoints.toList();
@@ -203,8 +211,8 @@ public class imageSURF{
             return true;
         }else{
             // not found - log message
-            System.out.println("  targettedImage not found");
-            System.out.println("  goodMatchesList.size(): " + goodMatchesList.size());
+            logger.log(Level.WARNING, "targettedImage not found");
+            logger.log(Level.WARNING, "Number of good matches: {0}", goodMatchesList.size());
             return false;
         }
     }
@@ -218,7 +226,6 @@ public class imageSURF{
      * @return
      */
     public boolean templateMatch(Mat targettedImageMat, double accuracy){
-        System.out.println("templateMatch()");
 
         // turn both snapshotMat and targettedImageMat into IplImage objects
         IplImage snapshotIpl = openCVMatToIplImage(snapshotMat);
@@ -241,8 +248,7 @@ public class imageSURF{
         int[] maxLoc = new int[2];
 
         cvMinMaxLoc(result, min_val, max_val, minLoc, maxLoc, null);
-        System.out.println("  " + java.util.Arrays.toString(min_val));
-        System.out.println("  " + java.util.Arrays.toString(max_val));
+        logger.log(Level.FINER, "Similarity: {0}%", max_val[0] * 100);
 
         if(max_val[0] > accuracy){
             // draw rectangle for matched region
@@ -270,7 +276,7 @@ public class imageSURF{
         }
 
         // not found
-        System.out.println("  not found");
+        logger.log(Level.WARNING, "targettedImage not found");
         return false;
     }
 
@@ -325,14 +331,5 @@ public class imageSURF{
             intArray[i] = (int) array[i];
         }
         return intArray;
-    }
-
-
-
-    /**
-     * Load OpenCV Core library automatically
-     */
-    static{
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     }
 }

@@ -2,6 +2,7 @@ package nmz;
 
 import imageUtils.corners;
 import imageUtils.targettedImage;
+import loggerUtils.loggerUtils;
 import mouseUtils.mouseClick;
 import mouseUtils.moveMouse;
 import org.opencv.core.Mat;
@@ -19,11 +20,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * "Controller"
  */
 public class nmzUtils{
+
+    private static Logger logger = Logger.getLogger(nmzController.class.getName());
+    static{
+        logger = loggerUtils.setLoggerConfig(logger);
+    }
 
     /**
      * Not automated:
@@ -67,7 +75,8 @@ public class nmzUtils{
     private bounds clicksForPotionDrinking;
 
 
-    public nmzUtils() throws AWTException{}
+    public nmzUtils() throws AWTException{
+    }
 
     /**
      * Load custom config parameters:
@@ -78,7 +87,6 @@ public class nmzUtils{
      *
      */
     public void loadNMZConfig(){
-        System.out.println("loadNMZConfig()");
         Properties prop = new Properties();
         InputStream input = null;
 
@@ -172,13 +180,13 @@ public class nmzUtils{
 
 
         }catch(IOException | AWTException e){
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "{0}", e.getMessage());
         }finally{
             if(input != null){
                 try{
                     input.close();
                 }catch(IOException e){
-                    e.printStackTrace();
+                    logger.log(Level.SEVERE, "{0}", e.getMessage());
                 }
             }
         }
@@ -204,8 +212,7 @@ public class nmzUtils{
             mouseClick.doubleClickWithOffset(mouseHoldDownValues, doubleClickDelay, doubleClickOffset);
             return true;
         }else{
-            System.out.println("prayerFlick()");
-            System.out.println("  targettedImage not found");
+            logger.log(Level.SEVERE, "targettedImage not found");
             return false;
         }
     }
@@ -223,7 +230,6 @@ public class nmzUtils{
      * For larger targettedImages, OpenCV algorithms work fine
      */
     private void findInventory() throws AWTException{
-        System.out.println("findInventory()");
         /**
          * 1. get coordinates of inventory
          * 2. use Robot to generate a screenshot of ONLY the inventory
@@ -239,12 +245,11 @@ public class nmzUtils{
         }
 
         // inventory not found
-        System.out.println("  inventory not found");
+        logger.log(Level.SEVERE, "inventory not found");
         System.exit(0);
     }
 
     public boolean drinkAbsorption() throws AWTException{
-        System.out.println("drinkAbsorption()");
 
         // only perform search on inventory
         imageSURF.loadSnapshotIntoMat(inventoryCorners);
@@ -268,7 +273,8 @@ public class nmzUtils{
                         clicksForPotionDrinking.getLowerBound(),
                         clicksForPotionDrinking.getUpperBound()
                 );
-                System.out.println("  numberOfClicks: " + numberOfClicks);
+
+                logger.log(Level.FINE, "numberOfClicks: {0}", numberOfClicks);
                 int[] mouseHoldDownValues = utils.randomPickItemsFromArray(mouseHoldDown, numberOfClicks);
                 // we can use doubleClickSpeed[] values - no need to create a new array for spam clicks
                 int[] clickDelayValues = utils.randomPickItemsFromArray(doubleClickSpeed, numberOfClicks);
@@ -277,12 +283,12 @@ public class nmzUtils{
             }
         }
         // not found
-        System.out.println("  no absorption pots found");
+        logger.log(Level.SEVERE, "No absorption potions left");
         return false;
     }
 
     public void drinkSuperRanging(){
-        System.out.println("drinkSuperRanging()");
+
 
     }
 }

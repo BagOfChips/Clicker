@@ -12,37 +12,41 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import loggerUtils.loggerUtils;
 import utils.utils;
 
 public class snapshot{
+
+    private static Logger logger = Logger.getLogger(snapshot.class.getName());
+    static{
+        logger = loggerUtils.setLoggerConfig(logger);
+    }
 
     private Robot robot = new Robot();
     private utils utils = new utils();
 
     private String picturesDirectoryString = null;
     private File picturesDirectory = null;
-    // todo: remove this after targettedImage.java done
     private String[] imageExtensions = new String[]{"gif", "png", "bmp", "jpg"};
-    //private BufferedImage[] targettedImages = null;
+    private BufferedImage[] targettedImages = null; // unused
     private BufferedImage snapshot = null;
 
-    public snapshot() throws AWTException{}
+    public snapshot() throws AWTException{
+    }
 
     public BufferedImage getSnapshot(){
         return snapshot;
     }
 
-    /*public BufferedImage[] getTargettedImages(){
-        return targettedImages;
-    }*/
 
     /**
      * Captures current screen - snapshot
      * We search for our targetted images in the snapshot
      */
     public void takeSnapshot(){
-        System.out.println("takeSnapshot()");
         int screenWidth = utils.getScreenWidth();
         int screenHeight = utils.getScreenHeight();
         Rectangle screenDimensions = new Rectangle(0, 0, screenWidth, screenHeight);
@@ -56,7 +60,6 @@ public class snapshot{
      * @param corners
      */
     public void takeSnapshot(corners corners){
-        System.out.println("takeSnapshot()");
         int[] topLeftCorner = corners.getTopLeftCorner();
         int[] bottomRightCorner = corners.getBottomRightCorner();
 
@@ -90,10 +93,10 @@ public class snapshot{
      * User can specify their own pictures directory
      * Initializes targettedImages
      *
-     * todo: REMOVE THIS
+     * UNUSED
      */
     public void loadBufferedImages(){
-        System.out.println("loadBufferedImages()");
+
         Properties prop = new Properties();
         InputStream input = null;
 
@@ -103,15 +106,14 @@ public class snapshot{
             picturesDirectoryString = prop.getProperty("picturesDirectory");
 
             picturesDirectory = new File(picturesDirectoryString);
-            /*if(picturesDirectory.isDirectory()){
+            if(picturesDirectory.isDirectory()){
 
                 // filter out only images in directory
-                // todo: might need a null check here
+                // might need a null check here
                 File[] filesArray = picturesDirectory.listFiles();
                 filesArray = filterFileArray(filesArray);
                 filesArray = removeNullValuesFromArray(filesArray);
 
-                System.out.println("  Files found: ");
                 printFiles(filesArray);
 
                 targettedImages = new BufferedImage[filesArray.length];
@@ -120,15 +122,15 @@ public class snapshot{
                     BufferedImage image = ImageIO.read(filesArray[i]);
                     targettedImages[i] = image;
                 }
-            }*/
+            }
         }catch(IOException e){
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "{0}", e.getMessage());
         }finally{
             if(input != null){
                 try{
                     input.close();
                 }catch(IOException e){
-                    e.printStackTrace();
+                    logger.log(Level.SEVERE, "{0}", e.getMessage());
                 }
             }
         }
@@ -177,7 +179,7 @@ public class snapshot{
      */
     public void printFiles(File[] files){
         for(File file: files){
-            System.out.println("    " + file.getName());
+            logger.log(Level.FINER, "  {0}", file.getName());
         }
     }
 }

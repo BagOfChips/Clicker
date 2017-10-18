@@ -1,17 +1,28 @@
 package imageUtils;
 
+import loggerUtils.loggerUtils;
+import mouseUtils.mouseClick;
+
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Load each individual targettedImage into a targettedImage object
  */
 public class targettedImage{
+
+    private static Logger logger = Logger.getLogger(targettedImage.class.getName());
+    static{
+        logger = loggerUtils.setLoggerConfig(logger);
+    }
 
     private BufferedImage targettedImage;
     private String[] imageExtensions = new String[]{"gif", "png", "bmp", "jpg"};
@@ -37,7 +48,7 @@ public class targettedImage{
             if(picturesDirectory.isDirectory()){
 
                 /**
-                 * todo: check if file already has extension
+                 * check if file already has extension
                  *  1. convert filename to lowercase
                  *  2. "pipe" it through imageExtensions[] to see if match
                  *      2.1 if so, do nothing
@@ -54,47 +65,45 @@ public class targettedImage{
 
                 File targettedImageFile = new File(absoluteFilename);
                 if(targettedImageFile.isFile()){
-                    System.out.println("  writing to BufferedImage");
+                    logger.log(Level.FINER, "Writing found image to BufferedImage");
                     targettedImage = ImageIO.read(targettedImageFile);
                 }
             }
         }catch(IOException e){
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "{0}", e.getMessage());
         }finally{
             if(input != null){
                 try{
                     input.close();
                 }catch(IOException e){
-                    e.printStackTrace();
+                    logger.log(Level.SEVERE, "{0}", e.getMessage());
                 }
             }
         }
     }
 
     private String getFilenameWithExt(String absoluteFileName){
-        System.out.println("getFilenameWithExt()");
         for(String ext: imageExtensions){
             String checkIfFileString = absoluteFileName + "." + ext;
             File checkIfFile = new File(checkIfFileString);
             if(checkIfFile.isFile()){
-                System.out.println("  found file: " + checkIfFileString);
+                logger.log(Level.FINE, "Found file: {0}", checkIfFileString);
                 return checkIfFileString;
             }
         }
-        System.out.println("  Cannot find file");
+        logger.log(Level.SEVERE, "Cannot find file: {0}", absoluteFileName);
         System.exit(0); // exit program
         return null;
     }
 
     private boolean filterFileExtension(String filename){
-        System.out.println("filterFileExtension()");
         for(String ext: imageExtensions){
             if(filename.toLowerCase().endsWith(ext)){
-                System.out.println("  filename already has extension");
+                logger.log(Level.FINEST, "Given filename {0} already has extension", filename);
                 return true;
             }
         }
-        System.out.println("  filename missing extension - searching...");
+        logger.log(Level.FINER, "  Filename missing extension; searching...");
         return false;
     }
 }

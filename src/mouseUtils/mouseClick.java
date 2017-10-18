@@ -2,10 +2,18 @@ package mouseUtils;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import loggerUtils.loggerUtils;
 import utils.utils;
 
 public class mouseClick{
+
+    private static Logger logger = Logger.getLogger(mouseClick.class.getName());
+    static{
+        logger = loggerUtils.setLoggerConfig(logger);
+    }
 
     private Robot robot = new Robot();
     private moveMouse moveMouse = new moveMouse();
@@ -13,13 +21,14 @@ public class mouseClick{
     private int cursorX;
     private int cursorY;
 
-    public mouseClick() throws AWTException{}
+    public mouseClick() throws AWTException{
+    }
 
     public void click(int randomHold){
         robot.mousePress(MouseEvent.BUTTON1_DOWN_MASK);
         robot.delay(randomHold);
         robot.mouseRelease(MouseEvent.BUTTON1_DOWN_MASK);
-        System.out.println("  click");
+        logger.log(Level.FINER, "{0}", loggerUtils.getCallingMethod());
     }
 
     /**
@@ -67,9 +76,6 @@ public class mouseClick{
         }
     }
 
-
-
-
     /**
      * Check if we are clicking off the screen
      *
@@ -77,11 +83,13 @@ public class mouseClick{
      * @return
      */
     private boolean screenBoundsCheck(int offset){
+        logger.log(Level.FINEST, "{0}", loggerUtils.getCallingMethod());
+
         cursorX = moveMouse.getMouseX();
         cursorY = moveMouse.getMouseY();
-
         if(cursorY + offset >= utils.getScreenHeight() || cursorX + offset >= utils.getScreenWidth()){
-            System.out.println("screenBoundsCheck()");
+            logger.log(Level.WARNING, "  Offbounds - random offset not applied");
+            //System.out.println("screenBoundsCheck()");
             System.out.println("  offbounds - random offset not applied");
             return true;
         }

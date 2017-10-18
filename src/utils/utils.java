@@ -1,12 +1,24 @@
 package utils;
 
+import loggerUtils.loggerUtils;
+
 import java.awt.*;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * utils: utility functions
  */
 public class utils{
+
+    private static Logger logger = Logger.getLogger(utils.class.getName());
+    static{
+        logger = loggerUtils.setLoggerConfig(logger);
+    }
+
+    public utils(){
+    }
 
     // generics
     public < E > void shuffleArray(E[] array){
@@ -43,12 +55,9 @@ public class utils{
     }
 
     public void printArray(int[] array){
-        System.out.println();
-        System.out.println("Printing Array: ");
         for(int i: array){
-            System.out.println(i);
+            logger.log(Level.FINEST, "  {0}", i);
         }
-
     }
 
     // screen utils
@@ -72,9 +81,8 @@ public class utils{
 
     public int randomPickNumberInRange(int lowerBound, int upperBound){
         if(lowerBound > upperBound){
-            System.out.println("randomPickNumberInRange()");
-            System.out.println("  lowerBound > upperBound");
-            System.exit(0);
+            logger.log(Level.SEVERE, "lowerBound > upperBound; swapping...");
+            randomPickNumberInRange(upperBound, lowerBound);
         }
         return random.nextInt((upperBound - lowerBound) + 1) + lowerBound;
     }

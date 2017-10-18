@@ -68,15 +68,15 @@ public class assignment_01main{
         //nmzUtils.prayerFlick();
 
         // testing nmzController
-        //nmzController nmzController = new nmzController();
-        //runResult run = nmzController.run();
-        //System.out.println(run);
+        nmzController nmzController = new nmzController();
+        runResult run = nmzController.run();
+        System.out.println(run);
 
         // demo - targettedImage
-        nmzUtils nmzUtils = new nmzUtils();
-        nmzUtils.loadNMZConfig();
+        //nmzUtils nmzUtils = new nmzUtils();
+        //nmzUtils.loadNMZConfig();
         //nmzUtils.prayerFlick();
-        nmzUtils.drinkAbsorption();
+        //nmzUtils.drinkAbsorption();
     }
 }
 

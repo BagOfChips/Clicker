@@ -1,15 +1,28 @@
 package utils;
 
+import imageUtils.corners;
+import loggerUtils.loggerUtils;
+
+import java.awt.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * msArrays: defines clicking intervals - all randomized
+ * todo: not all fields / methods are used - clean up file
  */
 public class msArrays{
+
+    private static Logger logger = Logger.getLogger(msArrays.class.getName());
+    static{
+        logger = loggerUtils.setLoggerConfig(logger);
+    }
+
     private int[] msFast;
     private int[] msSlow;
     private int[] mouseHoldDown;
@@ -80,13 +93,13 @@ public class msArrays{
             generateRandomizedmsArrays();
 
         }catch(IOException e){
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "{0}", e.getMessage());
         }finally{
             if(input != null){
                 try{
                     input.close();
                 }catch(IOException e){
-                    e.printStackTrace();
+                    logger.log(Level.SEVERE, "{0}", e.getMessage());
                 }
             }
         }
@@ -142,7 +155,7 @@ public class msArrays{
         }
     }
 
-    // todo: ONLY use this from now
+    // ONLY use this from now
     public int[] generateRandomizedIntArray(bounds bounds, int[] array){
         int lowerBound = bounds.getLowerBound();
         int upperBound = bounds.getLowerBound();
@@ -166,6 +179,7 @@ public class msArrays{
         }
     }
 
+    // UNUSED
     public void printmsArrays(){
         System.out.println("Fast ms");
         System.out.println("Array length: " + msFast.length);
