@@ -12,7 +12,7 @@ public class mouseClick{
 
     private static Logger logger = Logger.getLogger(mouseClick.class.getName());
     static{
-        logger = loggerUtils.setLoggerConfig(logger);
+        loggerUtils.setLoggerConfig(logger);
     }
 
     private Robot robot = new Robot();

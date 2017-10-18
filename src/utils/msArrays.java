@@ -20,7 +20,7 @@ public class msArrays{
 
     private static Logger logger = Logger.getLogger(msArrays.class.getName());
     static{
-        logger = loggerUtils.setLoggerConfig(logger);
+        loggerUtils.setLoggerConfig(logger);
     }
 
     private int[] msFast;

@@ -21,7 +21,7 @@ public class targettedImage{
 
     private static Logger logger = Logger.getLogger(targettedImage.class.getName());
     static{
-        logger = loggerUtils.setLoggerConfig(logger);
+        loggerUtils.setLoggerConfig(logger);
     }
 
     private BufferedImage targettedImage;

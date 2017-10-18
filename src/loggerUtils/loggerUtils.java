@@ -11,13 +11,12 @@ public class loggerUtils{
         return Thread.currentThread().getStackTrace()[2].getMethodName();
     }
 
-    public static Logger setLoggerConfig(Logger logger){
+    public static void setLoggerConfig(Logger logger){
         Handler handlerObj = new ConsoleHandler();
         handlerObj.setLevel(Level.ALL);
         logger.addHandler(handlerObj);
         logger.setLevel(Level.ALL);
         logger.setUseParentHandlers(false);
-        return logger;
     }
 
 

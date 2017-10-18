@@ -22,7 +22,7 @@ public class snapshot{
 
     private static Logger logger = Logger.getLogger(snapshot.class.getName());
     static{
-        logger = loggerUtils.setLoggerConfig(logger);
+        loggerUtils.setLoggerConfig(logger);
     }
 
     private Robot robot = new Robot();

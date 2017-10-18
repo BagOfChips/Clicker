@@ -21,7 +21,7 @@ public class moveMouse{
 
     private static Logger logger = Logger.getLogger(nmzController.class.getName());
     static{
-        logger = loggerUtils.setLoggerConfig(logger);
+        loggerUtils.setLoggerConfig(logger);
     }
 
     private Random random = new Random();

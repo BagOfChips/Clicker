@@ -42,7 +42,7 @@ public class imageSURF{
 
     private static Logger logger = Logger.getLogger(imageSURF.class.getName());
     static{
-        logger = loggerUtils.setLoggerConfig(logger);
+        loggerUtils.setLoggerConfig(logger);
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     }
 

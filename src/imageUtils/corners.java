@@ -14,7 +14,7 @@ public class corners{
 
     private static Logger logger = Logger.getLogger(corners.class.getName());
     static{
-        logger = loggerUtils.setLoggerConfig(logger);
+        /*logger = */loggerUtils.setLoggerConfig(logger);
     }
 
     private int[] topLeftCorner;        // 00
@@ -31,8 +31,6 @@ public class corners{
 
     public corners(int[] topLeftCorner, int[] topRightCorner,
                    int[] bottomRightCorner, int[] bottomLeftCorner){
-        logger = loggerUtils.setLoggerConfig(logger);
-
         this.topLeftCorner = topLeftCorner;
         this.topRightCorner = topRightCorner;
         this.bottomRightCorner = bottomRightCorner;

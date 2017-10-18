@@ -30,7 +30,7 @@ public class nmzUtils{
 
     private static Logger logger = Logger.getLogger(nmzController.class.getName());
     static{
-        logger = loggerUtils.setLoggerConfig(logger);
+        /*logger = */loggerUtils.setLoggerConfig(logger);
     }
 
     /**
